@@ -28,6 +28,8 @@ const OSS_INDEX_BASE_URL = 'https://ossindex.sonatype.org/';
 
 const COMPONENT_REPORT_ENDPOINT = 'api/v3/component-report';
 
+const COMPONENT_REPORT_ENDPOINT_AUTHORIZED = 'api/v3/authorized/component-report';
+
 const MAX_COORDINATES = 128;
 
 const PATH = path.join(homedir(), '.ossindex', 'auditjs');
@@ -57,7 +59,10 @@ export class OssIndexRequestService {
   }
 
   private getResultsFromOSSIndex(data: OssIndexCoordinates): Promise<object> {
-    const response = fetch(`${this.baseURL}${COMPONENT_REPORT_ENDPOINT}`, {
+    const endpoint = (this.user && this.password)
+      ? COMPONENT_REPORT_ENDPOINT_AUTHORIZED
+      : COMPONENT_REPORT_ENDPOINT;
+    const response = fetch(`${this.baseURL}${endpoint}`, {
       method: 'post',
       body: JSON.stringify(data),
       headers: this.getHeaders(),
